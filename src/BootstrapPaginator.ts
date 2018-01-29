@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges} from "@angular/core";
+import {Component, EventEmitter, Input, OnChanges, Output} from "@angular/core";
 import {DataTable} from "./DataTable";
 import * as _ from "lodash";
 
@@ -42,7 +42,7 @@ import * as _ from "lodash";
             </li>
         </ul>
         <ul class="pagination pull-right float-sm-right" *ngIf="p.dataLength > minRowsOnPage">
-            <li class="page-item" *ngFor="let rows of rowsOnPageSet" [class.active]="p.rowsOnPage===rows" (click)="p.setRowsOnPage(rows)">
+            <li class="page-item" *ngFor="let rows of rowsOnPageSet" [class.active]="p.rowsOnPage===rows" (click)="setPageSize(p, rows)">
                 <a class="page-link" style="cursor: pointer">{{rows}}</a>
             </li>
         </ul>
@@ -53,11 +53,18 @@ export class BootstrapPaginator implements OnChanges {
     @Input("rowsOnPageSet") rowsOnPageSet = [];
     @Input("mfTable") mfTable: DataTable;
 
+    @Output() pageSizeChanged = new EventEmitter<number>();
+
     minRowsOnPage = 0;
 
     ngOnChanges(changes: any): any {
         if (changes.rowsOnPageSet) {
             this.minRowsOnPage = _.min(this.rowsOnPageSet)
         }
+    }
+
+    setPageSize(p: any, size: number) {
+        p.setRowsOnPage(size);
+        this.pageSizeChanged.next(size);
     }
 }
