@@ -1,13 +1,14 @@
-import {Component, Input, SimpleChange, OnChanges, Optional} from "@angular/core";
-import {DataTable, PageEvent} from "./DataTable";
+import {Component, Input, OnChanges, OnDestroy, Optional, SimpleChange} from '@angular/core';
+import {DataTable, PageEvent} from './DataTable';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
-    selector: "mfPaginator",
-    template: `<ng-content></ng-content>`
+    selector: 'mfPaginator',
+    template: `
+        <ng-content></ng-content>`
 })
-export class Paginator implements OnChanges {
-
-    @Input("mfTable") inputMfTable: DataTable;
+export class Paginator implements OnChanges, OnDestroy {
+    @Input('mfTable') inputMfTable: DataTable;
 
     private mfTable: DataTable;
 
@@ -16,13 +17,20 @@ export class Paginator implements OnChanges {
     public dataLength: number = 0;
     public lastPage: number;
 
-    public constructor(@Optional() private injectMfTable: DataTable) {
+    private subs: Subscription[] = [];
+
+    constructor(@Optional() private injectMfTable: DataTable) {
     }
 
-    public ngOnChanges(changes: {[key: string]: SimpleChange}): any {
+    ngOnChanges(changes: { [key: string]: SimpleChange }): any {
         this.mfTable = this.inputMfTable || this.injectMfTable;
         this.onPageChangeSubscriber(this.mfTable.getPage());
-        this.mfTable.onPageChange.subscribe(this.onPageChangeSubscriber);
+        const sub = this.mfTable.onPageChange.subscribe(this.onPageChangeSubscriber);
+        this.subs.push(sub);
+    }
+
+    ngOnDestroy(): void {
+        this.subs.forEach(s => s.unsubscribe());
     }
 
     public setPage(pageNumber: number): void {
@@ -33,7 +41,7 @@ export class Paginator implements OnChanges {
         this.mfTable.setPage(this.activePage, rowsOnPage);
     }
 
-    private onPageChangeSubscriber = (event: PageEvent)=> {
+    private onPageChangeSubscriber = (event: PageEvent) => {
         this.activePage = event.activePage;
         this.rowsOnPage = event.rowsOnPage;
         this.dataLength = event.dataLength;

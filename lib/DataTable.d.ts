@@ -1,5 +1,5 @@
-import { EventEmitter, SimpleChange, OnChanges, DoCheck, IterableDiffers } from "@angular/core";
-import { ReplaySubject } from "rxjs/ReplaySubject";
+import { DoCheck, EventEmitter, IterableDiffers, OnChanges, SimpleChange } from '@angular/core';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 export interface SortEvent {
     sortBy: string | string[];
     sortOrder: string;

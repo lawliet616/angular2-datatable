@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from "@angular/core";
-import {DataTable} from "./DataTable";
-import * as _ from "lodash";
+import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {DataTable} from './DataTable';
+import * as _ from 'lodash';
 
 @Component({
-    selector: "mfBootstrapPaginator",
+    selector: 'mfBootstrapPaginator',
     template: `
     <mfPaginator #p [mfTable]="mfTable">
         <ul class="pagination" *ngIf="p.dataLength > p.rowsOnPage">
@@ -50,8 +50,8 @@ import * as _ from "lodash";
     `
 })
 export class BootstrapPaginator implements OnChanges {
-    @Input("rowsOnPageSet") rowsOnPageSet = [];
-    @Input("mfTable") mfTable: DataTable;
+    @Input('rowsOnPageSet') rowsOnPageSet = [];
+    @Input('mfTable') mfTable: DataTable;
 
     @Output() pageSizeChanged = new EventEmitter<number>();
 
@@ -59,7 +59,7 @@ export class BootstrapPaginator implements OnChanges {
 
     ngOnChanges(changes: any): any {
         if (changes.rowsOnPageSet) {
-            this.minRowsOnPage = _.min(this.rowsOnPageSet)
+            this.minRowsOnPage = _.min(this.rowsOnPageSet);
         }
     }
 
